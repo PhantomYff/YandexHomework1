@@ -3,8 +3,10 @@ using UnityEngine;
 namespace Game
 {
     [RequireComponent(typeof(Collider2D))]
-    public class Boost : MonoBehaviour
+    public abstract class Boost : MonoBehaviour
     {
-        [field: SerializeField] public BoostType Type { get; private set; }
+        public abstract ActiveBoost ApplyBoost(BoostArguments arguments);
+
+        public abstract void NotifyHandler(IBoostsHandler handler);
     }
 }

@@ -1,19 +1,22 @@
-﻿using System;
-using UnityEngine;
+﻿using UnityEngine;
+using YX;
+
+using Event = YX.Event;
 
 namespace Game
 {
     public class ActiveBoost
     {
-        public ActiveBoost(Action<ActiveBoost> endedCallback, float duration)
+        public IEvent Ended => _ended;
+
+        private readonly Event _ended = new();
+
+        public ActiveBoost(float duration)
         {
-            _endedCallback = endedCallback;
             _duration = duration;
         }
 
         private float _duration;
-
-        private readonly Action<ActiveBoost> _endedCallback;
 
         public void Tick()
         {
@@ -21,7 +24,7 @@ namespace Game
 
             if (_duration <= 0)
             {
-                _endedCallback.Invoke(this);
+                _ended.Invoke();
             }
         }
     }

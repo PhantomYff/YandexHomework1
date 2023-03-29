@@ -104,6 +104,10 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 8492794532885820065}
     m_Modifications:
+    - target: {fileID: 5128649079150377938, guid: f4897fa7ff714e8449d610ea9d789125, type: 3}
+      propertyPath: <AllowNoClip>k__BackingField
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 5597986613578456664, guid: f4897fa7ff714e8449d610ea9d789125, type: 3}
       propertyPath: m_Name
       value: Ceiling
@@ -174,6 +178,10 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 8492794532885820065}
     m_Modifications:
+    - target: {fileID: 5128649079150377938, guid: f4897fa7ff714e8449d610ea9d789125, type: 3}
+      propertyPath: <AllowNoClip>k__BackingField
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 5597986613578456664, guid: f4897fa7ff714e8449d610ea9d789125, type: 3}
       propertyPath: m_Name
       value: Floor

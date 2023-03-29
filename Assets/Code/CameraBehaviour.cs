@@ -7,12 +7,7 @@ namespace Game
         [SerializeField] private Transform _targetToFollow;
         [SerializeField] private float _followingLerp;
 
-        protected void FixedUpdate()
-        {
-            FollowTarget();
-        }
-
-        private void FollowTarget()
+        public void OnTargetMovement()
         {
             Vector3 position = transform.position;
             float x = Mathf.Lerp(position.x, _targetToFollow.position.x, _followingLerp * Time.fixedDeltaTime);

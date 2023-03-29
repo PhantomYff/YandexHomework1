@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
@@ -8,31 +9,36 @@ namespace Game
     public class PlayerBoosts : MonoBehaviour
     {
         [SerializeField] private PlayerMovement _movement;
-        [SerializeField] private PlayerVisuals _visuals;
 
-        private ActiveBoost _speedUpBoost;
+        private ActiveBoost _activeBoost;
+        private IBoostsHandler[] _boostsHandlers;
 
-        public IEnumerable<ActiveBoost> Boosts
+        protected void Start()
         {
-            get
+            FindHandlers();
+        }
+
+        private void FindHandlers()
+        {
+            var handlers = new LinkedList<IBoostsHandler>();
+
+            foreach (MonoBehaviour behaviour in FindObjectsOfType<MonoBehaviour>())
             {
-                yield return _speedUpBoost;
+                if (behaviour is IBoostsHandler handler)
+                    handlers.AddLast(handler);
             }
+            _boostsHandlers = handlers.ToArray();
         }
 
         protected void OnTriggerEnter2D(Collider2D collision)
         {
-            if (collision.TryGetComponent(out Boost boost))
+            if (_activeBoost == null && collision.TryGetComponent(out Boost boost))
             {
-                switch (boost.Type)
-                {
-                    case BoostType.SpeedUp:
-                        _movement.SpeedMultiplier = 1.5f;
-                        _visuals.SetSpeedUpColor();
+                _activeBoost = boost.ApplyBoost(
+                    new BoostArguments(_movement));
 
-                        _speedUpBoost = new ActiveBoost(SpeedBoostEnded, 5f);
-                        break;
-                }
+                NotifyHandlers(boost.NotifyHandler);
+                _activeBoost.Ended.AddListener(BoostEnded);
 
                 Destroy(boost.gameObject);
             }
@@ -40,18 +46,25 @@ namespace Game
 
         protected void Update()
         {
-            foreach (ActiveBoost boost in Boosts)
-            {
-                boost?.Tick();
-            }
+            _activeBoost?.Tick();
         }
 
-        private void SpeedBoostEnded(ActiveBoost boost)
+        private void BoostEnded()
         {
             _movement.SpeedMultiplier = 1f;
-            _visuals.SetDefaultColor();
 
-            _speedUpBoost = null;
+            NotifyHandlers(x => x?.OnBoostReset());
+            _activeBoost = null;
+        }
+
+        private void NotifyHandlers(Action<IBoostsHandler> action)
+        {
+            var handlers = new Span<IBoostsHandler>(_boostsHandlers);
+
+            for (int i = 0; i < handlers.Length; i++)
+            {
+                action(handlers[i]);
+            }
         }
     }
 }

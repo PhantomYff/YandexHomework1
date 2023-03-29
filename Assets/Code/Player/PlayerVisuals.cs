@@ -3,7 +3,7 @@ using UnityEngine;
 namespace Game
 {
     [RequireComponent(typeof(Animator), typeof(SpriteRenderer))]
-    public class PlayerVisuals : MonoBehaviour
+    public class PlayerVisuals : MonoBehaviour, IBoostsHandler
     {
         [Header("Moving Audio")]
         [SerializeField] private AudioSource _source;
@@ -13,6 +13,7 @@ namespace Game
         [Header("Colors")]
         [SerializeField] private Color _defaultColor;
         [SerializeField] private Color _speedUpColor;
+        [SerializeField] private Color _noClipColor;
 
         private float _soundTimes;
         private Animator _animator;
@@ -26,12 +27,6 @@ namespace Game
             _animator = GetComponent<Animator>();
             _sprite = GetComponent<SpriteRenderer>();
         }
-
-        public void SetSpeedUpColor()
-            => _sprite.color = _speedUpColor;
-
-        public void SetDefaultColor()
-            => _sprite.color = _defaultColor;
 
         public void MovingStarted(Vector2 movement)
         {
@@ -62,6 +57,24 @@ namespace Game
 
             _animator.SetFloat(HORIZONTAL_MOVEMENT, 0f);
             _animator.SetFloat(VERTICAL_MOVEMENT, 0f);
+        }
+
+        public void OnSpeedUp()
+        {
+            _sprite.color = _speedUpColor;
+            print(_sprite.color);
+        }
+
+        public void OnNoClip()
+        {
+            _sprite.color = _noClipColor;
+            print(_sprite.color);
+        }
+
+        public void OnBoostReset()
+        {
+            _sprite.color = _defaultColor;
+            print(_sprite.color);
         }
     }
 }
